@@ -13,7 +13,7 @@ pipeline {
                 dir('Grupy/Grupa04/KM305193/Lab07/Docker'){
 
                     sh '''
-                        curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
+                        curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
                         chmod +x ~/docker-compose
                         ~/docker-compose up -d build-agent
                     ''' 
