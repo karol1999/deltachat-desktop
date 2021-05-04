@@ -12,7 +12,11 @@ pipeline {
                 echo 'Start testing'
                 dir('Grupy/Grupa04/KM305193/Lab07/Docker')
                 {
-                    sh '~/docker-compose up -d test-agent'
+                    sh '''
+                        curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
+                        chmod +x ~/docker-compose
+                        docker-compose up -d test-agent
+                    ''' 
                 }
             }
         }
