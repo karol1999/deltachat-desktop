@@ -1,13 +1,17 @@
 pipeline {
 
     agent any
-    stages{
+    stages
+    {
         
-        stage('Test') {
+        stage('Test') 
+        {
 
-            steps{
+            steps
+            {
                 echo 'Start testing'
-                dir('Grupy/Grupa04/KM305193/Lab07/Docker'){
+                dir('Grupy/Grupa04/KM305193/Lab07/Docker')
+                {
                     sh '~/docker-compose up -d test-agent'
                 }
             }
