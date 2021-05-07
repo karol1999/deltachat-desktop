@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh 'git pull origin master'
                 sh 'npm install'
-                sh 'npm build'
+                sh 'npm run build'
             }
             post {
         failure {
@@ -27,8 +27,7 @@ pipeline {
         stage('Test') { 
             steps {
                 echo 'Testing'
-                sh 'npm install'
-                sh 'npm test'
+                sh 'npm run test'
             }
             post {
         failure {
