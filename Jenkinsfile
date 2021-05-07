@@ -1,46 +1,51 @@
 pipeline {
-
-    agent any
-    stages
-    {
-        
-        stage('Test') 
-        {
-
-            steps
-            {
-                echo 'Start testing'
-                git branch: 'Grupa04-KM305193_Lab07', url: 'https://github.com/InzynieriaOprogramowaniaAGH/MIFT2021'
-
-                dir('Grupy/Grupa04/KM305193/Lab07/Docker')
-                {
-                    sh '''
-                        curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
-                        chmod +x ~/docker-compose
-                        docker-compose up -d test-agent
-                    ''' 
-                }
+    agent any 
+    stages {
+        stage('Build') { 
+            steps {
+                sh 'git pull origin master'
+                sh 'npm install'
+                sh 'npm build'
             }
-        }
-    }
-
-
-    post {
-
-        success {
-            emailext attachLog: true, 
-                body: "Test notification: ${currentBuild.currentResult}: Job ${env.JOB_NAME}, More informations in attachment", 
-                recipientProviders: [developers()], 
-                subject: 'Test positive', 
-                to: 'kmat962@gmail.com'
-        }
-
+            post {
         failure {
-            emailext attachLog: true, 
-                body: "Test notification: ${currentBuild.currentResult}: Job ${env.JOB_NAME}, More informations in attachment", 
-                recipientProviders: [developers()], 
-                subject: 'Test failure', 
-                to: 'kmat962@gmail.com'
+            emailext attachLog: true,
+                body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}",
+                recipientProviders: [developers(), requestor()],
+                to: 'kmat962@gmail.com',
+                subject: "Build failure ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
+        }
+        success {
+            emailext attachLog: true,
+                body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}",
+                recipientProviders: [developers(), requestor()],
+                to: 'kmat962@gmail.com',
+                subject: "Build positive ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
         }
     }
+        }
+        stage('Test') { 
+            steps {
+                echo 'Testing'
+                sh 'npm run test'
+            }
+            post {
+        failure {
+            emailext attachLog: true,
+                body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}",
+                recipientProviders: [developers(), requestor()],
+                to: 'kmat962@gmail.com',
+                subject: "Test failure ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
+        }
+        success {
+            emailext attachLog: true,
+                body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}",
+                recipientProviders: [developers(), requestor()],
+                to: 'kmat962@gmail.com',
+                subject: "Test positive ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
+        }
+    }
+        }
+    }
+
 }
