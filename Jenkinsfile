@@ -67,7 +67,7 @@ pipeline
         	steps
         	{
         		echo 'Deploying'
-        		sh 'docker build -t deltachat-desktop -f Deploy-dockerfile .'
+        		sh 'docker build -t deploy -f Deploy-dockerfile .'
         	}
         	post
         	{
